@@ -20,10 +20,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project files
 COPY backend/ /app/
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
 # Collect static files
 RUN python manage.py collectstatic --no-input
 
 EXPOSE 8000
 
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+# Execute entrypoint script using /bin/sh so built-ins work properly
+ENTRYPOINT ["/bin/sh", "/app/entrypoint.sh"]

@@ -1,0 +1,11 @@
+[phases.setup]
+nixPkgs = ["python312", "pkg-config", "default-libmysqlclient-dev"]
+
+[phases.install]
+cmds = ["pip install -r backend/requirements.txt"]
+
+[phases.build]
+cmds = ["cd backend && python manage.py collectstatic --no-input"]
+
+[start]
+cmd = "sh entrypoint.sh"

@@ -58,6 +58,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.onrender.com',
     'https://*.railway.app',
     'https://*.up.railway.app',
+    'https://*.railway.com',
 ]
 
 ROOT_URLCONF = 'config.urls'
