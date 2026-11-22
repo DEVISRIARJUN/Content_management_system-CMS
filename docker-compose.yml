@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: cms_db
+      MYSQL_ROOT_PASSWORD: root_production_password
+      MYSQL_USER: cms_user
+      MYSQL_PASSWORD: cms_production_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  web:
+    build: .
+    restart: always
+    command: >
+      sh -c "python manage.py migrate &&
+             python seed_data.py &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+    volumes:
+      - ./backend/media:/app/media
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_ENGINE=mysql
+      - DB_NAME=cms_db
+      - DB_USER=cms_user
+      - DB_PASSWORD=cms_production_password
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DEBUG=False
+      - SECRET_KEY=production-secure-key-2026-super-strong
+    depends_on:
+      - db
+
+volumes:
+  mysql_data:
